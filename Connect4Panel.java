@@ -19,6 +19,7 @@ public class Connect4Panel extends JPanel {
         colors.put(-1, new Color(200,200,0));
 
         p1turn = true;
+        //test
     }
 
     public void playMove(int c){
