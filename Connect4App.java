@@ -16,7 +16,7 @@ public class Connect4App extends JFrame {
 
     private class ClickListener implements MouseListener{
         public void mouseClicked(MouseEvent e){
-            int column = MouseInfo.getPointerInfo().getLocation().x/120;
+            int column = e.getX()/120;
             game.playMove(column);
             game.AImove();
             game.repaint();
