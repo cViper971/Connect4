@@ -18,6 +18,7 @@ public class Connect4App extends JFrame {
         public void mouseClicked(MouseEvent e){
             int column = MouseInfo.getPointerInfo().getLocation().x/120;
             game.playMove(column);
+            game.AImove();
             game.repaint();
         }
 
