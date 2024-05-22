@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class Connect4Panel extends JPanel {
     int[][] board;
-    HashMap<Integer,Color> colors;
+    HashMap<Integer,Color[]> colors;
     boolean p1turn;
     boolean gameOver;
 
@@ -16,22 +16,21 @@ public class Connect4Panel extends JPanel {
             System.out.println(Arrays.toString(r));
 
         colors = new HashMap<>();
-        colors.put(1, new Color(255,0,0));
-        colors.put(0, new Color(255,255,255));
-        colors.put(-1, new Color(200,200,0));
+        colors.put(1, new Color[]{new Color(245, 39, 39),new Color(143, 12, 10)});
+        colors.put(0, new Color[]{new Color(255,255,255),new Color(255,255,255)});
+        colors.put(-1, new Color[]{new Color(242, 229, 41),new Color(163, 155, 23)});
 
         p1turn = true;
         gameOver = false;
     }
 
-    public void playMove(int c){
+    public void playMove(int c, boolean p1turn){
         if(gameOver) return;
 
         System.out.println(getValidMoves());
 
         int r = getColIndex(c);
         board[r][c] = p1turn ? 1 : -1;
-        p1turn = !p1turn;
 
         if(checkWinner()!=0) gameOver = true;
     }
@@ -74,28 +73,28 @@ public class Connect4Panel extends JPanel {
 
     public void AImove(){
         int bestMove = 0;
-        int bestScore = Integer.MIN_VALUE;
+        int bestScore = Integer.MAX_VALUE;
 
         ArrayList<Integer> validMoves = getValidMoves();
         for (int move : validMoves) {
             int r = getColIndex(move);
-            board[r][move] = 1;
-            int score = minimax(8, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
+            board[r][move] = -1;
+            int score = minimax(10, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
             System.out.println(move+" "+score);
             board[r][move] = 0;
 
-            if (score > bestScore) {
+            if (score < bestScore) {
                 bestScore = score;
                 bestMove = move;
             }
         }
 
-        playMove(bestMove);
+        playMove(bestMove, false);
     }
 
     private int minimax(int depth, int alpha, int beta, boolean p1) {
-        int score = evaluate();
-        if (score == Integer.MAX_VALUE || score == -1*Integer.MAX_VALUE || depth == 0) {
+        int score = checkWinner();
+        if (score == 1 || score == -1|| depth == 0) {
             return score;
         }
 
@@ -130,10 +129,7 @@ public class Connect4Panel extends JPanel {
     }
 
     public int evaluate(){
-        if(checkWinner()!=0)
-            return checkWinner()*Integer.MAX_VALUE;
-        else
-            return 0;
+        return checkWinner();
     }
 
     private ArrayList<Integer> getValidMoves() {
@@ -152,12 +148,14 @@ public class Connect4Panel extends JPanel {
     }
 
     public void drawBoard(Graphics g){
-        g.setColor(new Color(0,0,255));
+        g.setColor(new Color(57, 51, 232));
         g.fillRect(0, 0, 840, 720);
-        g.setColor(new Color(255,255,255));
         for(int i=0;i<6;i++){
             for(int j=0;j<7;j++){
-                g.setColor(colors.get(board[i][j]));
+                g.setColor(new Color(29, 25, 125));
+                g.fillOval(120*j+10, 120*i+10, 100, 100);
+
+                g.setColor(colors.get(board[i][j])[0]);
                 g.fillOval(120*j+15, 120*i+15, 90, 90);
             }
         }
